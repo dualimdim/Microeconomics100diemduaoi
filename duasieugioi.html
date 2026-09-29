@@ -1,0 +1,1591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ECON 3300 - Intermediate Microeconomics Master Hub</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* 3D Flip Card Effect */
+    .perspective { perspective: 1000px; }
+    .flip-card-inner {
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+    }
+    .flipped { transform: rotateY(180deg); }
+    .backface-hidden {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .rotate-y-180 { transform: rotateY(180deg); }
+    /* Sleek Custom Scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f8fafc; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col md:flex-row">
+
+  <!-- Mobile Top Bar -->
+  <header class="md:hidden bg-slate-900 text-white p-4 flex items-center justify-between shadow-md sticky top-0 z-50">
+    <div class="flex items-center space-x-2">
+      <i class="fa-solid fa-chart-line text-brand-400 text-xl"></i>
+      <span class="font-bold text-base tracking-tight">Microeconomics Master Hub</span>
+    </div>
+    <button id="mobileMenuBtn" class="p-2 rounded hover:bg-slate-800 focus:outline-none">
+      <i class="fa-solid fa-bars text-xl"></i>
+    </button>
+  </header>
+
+  <!-- Sidebar Navigation -->
+  <aside id="sidebar" class="fixed md:static inset-y-0 left-0 transform -translate-x-full md:translate-x-0 transition-transform duration-200 ease-in-out z-40 w-72 bg-slate-900 text-slate-100 flex flex-col shadow-2xl">
+    <!-- Hub Brand -->
+    <div class="p-5 border-b border-slate-800 hidden md:flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
+        <i class="fa-solid fa-graduation-cap text-lg"></i>
+      </div>
+      <div>
+        <h1 class="font-bold text-base leading-tight">ECON 3300</h1>
+        <p class="text-xs text-slate-400">Intermediate Microeconomics</p>
+      </div>
+    </div>
+
+    <!-- Chapter Selector / Filter -->
+    <div class="p-4 border-b border-slate-800">
+      <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2">Select Chapter</label>
+      <select id="chapterSelect" onchange="switchChapter(this.value)" class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg p-2.5 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+        <!-- Injected via JS -->
+      </select>
+    </div>
+
+    <!-- Mode Navigation Tabs -->
+    <nav class="flex-1 overflow-y-auto p-4 space-y-1.5" id="navTabs">
+      <button onclick="switchTab('fullStudyGuide')" data-tab="fullStudyGuide" class="tab-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-lg text-sm font-medium transition-all bg-brand-600 text-white shadow-md">
+        <i class="fa-solid fa-book-bookmark w-5 text-center"></i>
+        <span>Full Study Guide</span>
+      </button>
+      <button onclick="switchTab('simulator')" data-tab="simulator" class="tab-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-100">
+        <i class="fa-solid fa-sliders w-5 text-center"></i>
+        <span>Interactive Grapher</span>
+      </button>
+      <button onclick="switchTab('summary')" data-tab="summary" class="tab-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-100">
+        <i class="fa-solid fa-bolt w-5 text-center"></i>
+        <span>Summary Cheat-Sheet</span>
+      </button>
+      <button onclick="switchTab('exercises')" data-tab="exercises" class="tab-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-100">
+        <i class="fa-solid fa-calculator w-5 text-center"></i>
+        <span>Slide Exercises</span>
+      </button>
+      <button onclick="switchTab('flashcards')" data-tab="flashcards" class="tab-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-100">
+        <i class="fa-solid fa-clone w-5 text-center"></i>
+        <span>Flashcards</span>
+      </button>
+      <button onclick="switchTab('quiz')" data-tab="quiz" class="tab-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-100">
+        <i class="fa-solid fa-circle-question w-5 text-center"></i>
+        <span>Practice Quiz Sets</span>
+      </button>
+    </nav>
+
+    <!-- Footer Meta -->
+    <div class="p-4 border-t border-slate-800 text-xs text-slate-500 flex justify-between items-center">
+      <span>Modules: Ch 1 & Ch 3</span>
+      <span class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-950 text-emerald-400 border border-emerald-800">Multi-Exam Ready</span>
+    </div>
+  </aside>
+
+  <!-- Main Workspace -->
+  <main class="flex-1 flex flex-col min-h-screen overflow-hidden">
+    <!-- Top Bar with Real-time Search -->
+    <div class="bg-white border-b border-slate-200 px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <h2 id="currentChapterHeading" class="text-xl font-bold text-slate-900">Chapter 1: Two Basic Economic Models</h2>
+        <p id="currentChapterSub" class="text-xs text-slate-500">ECON 3300 • Intermediate Microeconomic Theory</p>
+      </div>
+
+      <!-- Quick Concept Search -->
+      <div class="relative w-full sm:w-80">
+        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
+          <i class="fa-solid fa-magnifying-glass text-xs"></i>
+        </span>
+        <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="Search any term, proof, or concept..." class="w-full pl-9 pr-4 py-2 text-sm bg-slate-100 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500 focus:bg-white transition-all"/>
+        <!-- Search Results Dropdown -->
+        <div id="searchResults" class="hidden absolute left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-slate-200 max-h-96 overflow-y-auto z-50 p-2 space-y-1"></div>
+      </div>
+    </div>
+
+    <!-- Dynamic Content Area -->
+    <div class="flex-1 overflow-y-auto p-4 md:p-8 bg-slate-50" id="mainContainer">
+      <!-- Injected via JavaScript -->
+    </div>
+  </main>
+
+  <script>
+    /* ==========================================================================
+       COURSE DATA ARCHITECTURE (Open Module Pattern - 100% Zero Truncation)
+       ========================================================================== */
+    const courseData = {
+      subject: "ECON 3300 - Intermediate Microeconomic Theory",
+      chapters: [
+        {
+          id: "ch1",
+          number: "Chapter 1",
+          title: "Two Basic Economic Models",
+          description: "Comprehensive foundation of scarce resource allocation, microeconomic methodology, real-world applications, the Production Possibility Frontier (PPF), and the Supply-Demand equilibrium market mechanism.",
+          studyGuide: [
+            {
+              sectionHeader: "1. Core Foundations and Scope of Economics",
+              subSections: [
+                {
+                  subtitle: "A. Formal Verbatim Definition of Economics",
+                  details: [
+                    "Economics is defined formally as: 'Economics is the study of the allocation of scarce resources among alternative uses.'",
+                    "The Scarcity Axiom: Human wants, desires, and material requirements are virtually infinite, whereas productive resources (land, physical capital, natural raw materials, labor, specialized skills, and time) are strictly limited and finite.",
+                    "The fundamental economic problem: Because society cannot produce enough goods and services to satisfy all individual desires, scarcity necessitates rational choice, prioritizing, and trade-offs."
+                  ]
+                },
+                {
+                  subtitle: "B. Scope and Analytical Methodology of Microeconomics",
+                  details: [
+                    "Microeconomics focuses explicitly on the behavior and decision-making mechanisms of individual economic agents: single consumers, individual households, and distinct business firms.",
+                    "It investigates how these individual agents optimize their economic objectives (utility maximization for consumers subject to income constraints, and profit maximization for business enterprises subject to cost and technology constraints).",
+                    "Market Interaction: Analyzes how these optimizing units interact within specific goods markets and input factor markets to establish equilibrium prices and quantities.",
+                    "Positive vs. Normative Analysis: Positive microeconomics analyzes 'what is' (descriptive, value-free, testable cause-and-effect hypotheses), whereas Normative microeconomics addresses 'what ought to be' (prescriptive value judgments, social ethics, and public policy recommendations)."
+                  ]
+                },
+                {
+                  subtitle: "C. Who Uses Microeconomics? (The Four Core Stakeholders)",
+                  details: [
+                    "1. Consumers / Households: To determine optimal consumption bundles that maximize satisfaction (utility) subject to finite personal budgets, and to optimize the allocation of time between wage labor and leisure.",
+                    "2. Business Firms: To determine optimal output quantity, cost-minimizing input combinations (capital vs. labor), strategic market pricing, and investment decisions to maximize economic profit.",
+                    "3. Policymakers & Government Regulators: To evaluate tax incidence, design price controls (ceilings and floors), regulate natural monopolies, address environmental market failures (externalities), and optimize social welfare.",
+                    "4. You Everyday: To evaluate daily personal choices, personal financial budgeting, time allocation, and opportunity costs."
+                  ]
+                },
+                {
+                  subtitle: "D. Classroom Discussion Activity: Everyday Economic Decisions",
+                  details: [
+                    "Slide Question: 'Think about your decision to get out of bed and come to class today. How is that an economic decision?'",
+                    "Economic Rationale for Student Notebooks: Deciding to wake up and attend lecture is a classic microeconomic optimization problem governed by the scarcity of time and the concept of opportunity cost.",
+                    "Marginal Analysis: A rational student implicitly evaluates Marginal Benefit (MB) against Marginal Cost (MC).",
+                    "• Marginal Benefit (MB): Acquiring lecture concepts, participating in class, keeping GPA high, avoiding the risk of failing exams, and improving career prospects.",
+                    "• Marginal Cost (MC): The opportunity cost of forgone utility from remaining in bed (sleep, rest, leisure) or spending time on alternative activities.",
+                    "Optimization Rule: The rational agent decides to get out of bed and attend class because at that specific margin, MB > MC."
+                  ]
+                }
+              ]
+            },
+            {
+              sectionHeader: "2. Model 1: The Production Possibility Frontier (PPF)",
+              subSections: [
+                {
+                  subtitle: "A. Theoretical Definition and Graphical Framework",
+                  details: [
+                    "The Production Possibility Frontier (PPF) is a graphical representation depicting the maximum alternative combinations of two goods or services that an economic system can produce within a given time period, assuming all available resources and technology are fully and efficiently utilized.",
+                    "Two-Good Economy Representation: Typically plotted with Good X (e.g., Agricultural/Civilian goods) on the horizontal axis and Good Y (e.g., Manufactured/Defense goods) on the vertical axis."
+                  ]
+                },
+                {
+                  subtitle: "B. The Six Fundamental Economic Principles Illustrated by the PPF",
+                  details: [
+                    "1. Scarcity: Plotted boundary line. Points outside the frontier boundary are unattainable given current productive resources and technological limits.",
+                    "2. Choice: Because points outside the frontier are unattainable, society must decide on one single specific output bundle along the curve based on collective preferences.",
+                    "3. Opportunity Cost: Producing more units of Good X strictly requires transferring inputs away from Good Y, resulting in a sacrifice of a certain quantity of Good Y.",
+                    "4. Productive Efficiency: Points directly ON the frontier represent productive efficiency (full resource employment, maximum output). Points INSIDE the curve represent productive inefficiency (unemployment, underemployment, or misallocation of inputs). Points OUTSIDE are unattainable in the short run.",
+                    "5. Productive Trade-offs (Marginal Rate of Transformation - MRT): Quantified by the slope of the PPF: MRT = -ΔY / ΔX, measuring the exact rate of trade-off between the two goods.",
+                    "6. Economic Growth: Depicted by an outward shift of the entire PPF boundary, driven by technological innovations, capital stock accumulation, or labor force expansion."
+                  ]
+                },
+                {
+                  subtitle: "C. Curvature of the PPF: Law of Increasing Opportunity Costs",
+                  details: [
+                    "Standard PPF curves are bowed-out (concave to the origin).",
+                    "Economic Justification: Productive resources (specialized labor, specific capital, fertile land) are not perfectly adaptable across alternative industries. As an economy shifts specialized resources away from producing Good Y into Good X, diminishing marginal productivity occurs, causing the opportunity cost of Good X (forgone Good Y) to rise progressively."
+                  ]
+                },
+                {
+                  subtitle: "D. In-Class Case: The Study Time PPF (Exam Preparation)",
+                  details: [
+                    "Scenario from Slide: A student prepares for two simultaneous examinations: 'Grade in Econ' vs. 'Grade in Psych', operating with a fixed time budget of 8 hours.",
+                    "1. What resources are you using? Primary resources are fixed Study Time (8 hours) and cognitive mental energy.",
+                    "2. Constant vs. Increasing Opportunity Costs: If study efficiency is identical across all topics and no cognitive fatigue occurs, the PPF is a downward-sloping straight line (Constant Opportunity Cost). In reality, as study hours on one subject extend consecutively, mental fatigue and diminishing returns set in, while the neglected subject's missed core concepts cause larger grade drops, making opportunity costs increasing (bowed-out PPF).",
+                    "3. Expansion of Time Budget (10 hours instead of 8 hours): An increase in available productive resources (study time) expands the student's capacity, shifting the entire PPF outward away from the origin and allowing higher achievable grade combinations in both subjects."
+                  ]
+                }
+              ]
+            },
+            {
+              sectionHeader: "3. Model 2: The Supply and Demand Market Mechanism",
+              subSections: [
+                {
+                  subtitle: "A. The Demand Schedule and Curve",
+                  details: [
+                    "Law of Demand: Holding all other factors constant (ceteris paribus), an inverse relationship exists between the unit price of a good and the quantity demanded by buyers (dQ_D / dP < 0).",
+                    "Graphical Property: Downward-sloping curve reflecting consumers' diminishing marginal willingness to pay as successive units are consumed."
+                  ]
+                },
+                {
+                  subtitle: "B. The Supply Schedule and Curve",
+                  details: [
+                    "Law of Supply: Holding other factors constant (ceteris paribus), a direct (positive) relationship exists between the unit price of a good and the quantity offered for sale by producers (dQ_S / dP > 0).",
+                    "Graphical Property: Upward-sloping curve reflecting increasing marginal costs of production for firms."
+                  ]
+                },
+                {
+                  subtitle: "C. Market Equilibrium and Clearing Dynamics (P*, Q*)",
+                  details: [
+                    "Market Equilibrium occurs strictly at the mathematical intersection of the Demand and Supply curves where Quantity Demanded equals Quantity Supplied: Q_D(P*) = Q_S(P*) = Q*.",
+                    "At the equilibrium price P*, the market clears: there is neither unsold inventory nor unfulfilled buyer demand.",
+                    "Surplus (Excess Supply): Occurs when Market Price P > P* => Q_S > Q_D. Unsold inventory accumulates, inducing competing sellers to lower prices, putting downward pressure on price toward P*.",
+                    "Shortage (Excess Demand): Occurs when Market Price P < P* => Q_D > Q_S. Buyers compete for scarce goods, bidding market price upward toward P*."
+                  ]
+                }
+              ]
+            }
+          ],
+          summary: [
+            {
+              title: "Definition of Economics",
+              content: "“Economics is the study of the allocation of scarce resources among alternative uses.”"
+            },
+            {
+              title: "Four Users of Microeconomics",
+              content: "1. Consumers/Households (Utility maximization)\n2. Firms (Profit maximization)\n3. Policymakers (Market failure regulation & welfare)\n4. Everyday individuals (Daily opportunity cost choices)"
+            },
+            {
+              title: "The PPF Core Model",
+              content: "Depicts maximum output combinations of 2 goods with fixed resources & technology.\n• On curve: Efficient\n• Inside: Inefficient\n• Outside: Unattainable\n• Slope: MRT = -ΔY / ΔX (Opportunity Cost)\n• Bowed-out curvature: Law of Increasing Opportunity Cost."
+            },
+            {
+              title: "Market Equilibrium Condition",
+              content: "Q_Demand(P*) = Q_Supply(P*).\n• P > P*: Surplus (Q_S > Q_D) => Price falls.\n• P < P*: Shortage (Q_D > Q_S) => Price rises."
+            }
+          ],
+          slideExercises: [
+            {
+              id: "ex1_1",
+              title: "Exercise 1: Market Clearing Equilibrium & Disequilibrium Dynamics",
+              problem: "Explain analytically and graphically how equilibrium price P* and quantity Q* are established based on the slide graph showing downward-sloping Demand and upward-sloping Supply.",
+              solution: "1. Mathematical Intersection:\nEquilibrium is defined by the unique point where market demand equals market supply:\n   Q_D(P*) = Q_S(P*) = Q*\n\n2. Disequilibrium Case 1 (Surplus):\nIf the prevailing market price is P_high > P*:\n• Quantity Supplied Q_S(P_high) > Quantity Demanded Q_D(P_high)\n• Unsold inventory accumulates: Surplus = Q_S - Q_D > 0\n• To liquidate excess inventory, competing sellers lower prices, driving P downward toward P*.\n\n3. Disequilibrium Case 2 (Shortage):\nIf the prevailing market price is P_low < P*:\n• Quantity Demanded Q_D(P_low) > Quantity Supplied Q_S(P_low)\n• Shortage = Q_D - Q_S > 0\n• Eager buyers bid up prices, inducing producers to expand supply until price reaches P*.\n\nConclusion: Only at P* does the market achieve stability without internal forces for change."
+            },
+            {
+              id: "ex1_2",
+              title: "Exercise 2: The Study Time PPF Trade-off (In-Class Slide Case)",
+              problem: "A student has 8 hours to allocate between preparing for an Economics exam (Grade in Econ) and a Psychology exam (Grade in Psych).\n1. Identify the scarce resource.\n2. Explain whether opportunity costs are constant or increasing.\n3. What happens graphically to the PPF if available study time increases from 8 hours to 10 hours?",
+              solution: "1. Scarce Resource:\nThe primary resource is fixed Study Time (8 hours) and cognitive mental energy.\n\n2. Opportunity Cost Nature:\n• If switching 1 hour of study from Psych to Econ always trades off grade points at a fixed constant rate, the PPF is a downward-sloping straight line (Constant Opportunity Cost).\n• In reality, as a student spends more consecutive hours on Econ, cognitive fatigue and diminishing returns set in, while the neglected Psych material becomes progressively costlier to abandon. Thus, opportunity costs are increasing, making the PPF concave (bowed-out) to the origin.\n\n3. Increase in Available Time (from 8h to 10h):\n• Additional resources expand the production capacity.\n• The entire PPF shifts outward away from the origin, allowing the student to attain previously unattainable grade combinations in both subjects."
+            }
+          ],
+          flashcards: [
+            {
+              front: "Economics",
+              back: "The study of the allocation of scarce resources among alternative uses."
+            },
+            {
+              front: "Production Possibility Frontier (PPF)",
+              back: "A graphical model showing the maximum combinations of two goods that can be produced using available resources and technology."
+            },
+            {
+              front: "Opportunity Cost",
+              back: "The value of the next best alternative forgone when making an economic decision, geometrically measured by the slope of the PPF."
+            },
+            {
+              front: "Marginal Rate of Transformation (MRT)",
+              back: "The rate at which one output must be sacrificed to produce an additional unit of another output: MRT = -ΔY / ΔX."
+            },
+            {
+              front: "Market Equilibrium (P*, Q*)",
+              back: "The market price and quantity where quantity demanded equals quantity supplied, clearing the market."
+            }
+          ],
+          quizSets: [
+            {
+              setId: "ch1_set1",
+              setName: "Exam Set 1: Definitions & Core Foundations",
+              questions: [
+                {
+                  question: "According to Chapter 1, what is the exact formal definition of Economics?",
+                  options: [
+                    "The study of financial markets, banking institutions, and investment returns.",
+                    "The study of the allocation of scarce resources among alternative uses.",
+                    "The mathematical forecasting of national inflation and unemployment rates.",
+                    "The analysis of corporate taxation and government fiscal budgeting."
+                  ],
+                  correct: 1,
+                  explanation: "Slide verbatim: 'Economics is the study of the allocation of scarce resources among alternative uses.'"
+                },
+                {
+                  question: "Which statement best describes Positive Microeconomics?",
+                  options: [
+                    "Prescribing ethical value judgments on how wealth should be redistributed.",
+                    "Describing objective, testable cause-and-effect relationships about 'what is'.",
+                    "Mandating price ceilings on essential pharmaceutical goods.",
+                    "Assuming consumer preferences are always non-transitive."
+                  ],
+                  correct: 1,
+                  explanation: "Positive economics analyzes 'what is' using testable hypotheses, distinct from Normative economics which addresses 'what ought to be'."
+                },
+                {
+                  question: "Deciding to get out of bed and attend lecture is an economic decision because:",
+                  options: [
+                    "Tuition is a sunk cost that forces attendance.",
+                    "It involves allocating scarce time by comparing the marginal benefit against the opportunity cost of forgone sleep/leisure.",
+                    "Universities strictly enforce market clearing equilibria.",
+                    "Attending class shifts the national PPF curve inward."
+                  ],
+                  correct: 1,
+                  explanation: "Economics studies rational choice under scarce time; attendance occurs because Marginal Benefit exceeds Marginal Cost."
+                }
+              ]
+            },
+            {
+              setId: "ch1_set2",
+              setName: "Exam Set 2: PPF & Opportunity Cost Analysis",
+              questions: [
+                {
+                  question: "Why is the standard Production Possibility Frontier (PPF) typically bowed-out (concave to the origin)?",
+                  options: [
+                    "Because resources are infinite and perfectly adaptable across all industries.",
+                    "Because of the Law of Increasing Opportunity Costs due to resource specialization.",
+                    "Because consumer preferences are linear and non-transitive.",
+                    "Because prices of inputs are held constant regardless of output volume."
+                  ],
+                  correct: 1,
+                  explanation: "Resources are not equally suited to producing both goods; shifting specialized resources yields diminishing returns, making opportunity cost rise."
+                },
+                {
+                  question: "If a student's available study time increases from 8 hours to 10 hours, what happens to their Study Time PPF?",
+                  options: [
+                    "The PPF pivots inward toward the origin.",
+                    "The slope of the PPF becomes permanently zero.",
+                    "The entire PPF shifts outward away from the origin.",
+                    "The student moves along the existing PPF to an inefficient interior point."
+                  ],
+                  correct: 2,
+                  explanation: "An increase in available productive resources (study hours) shifts the PPF outward, representing capacity growth."
+                },
+                {
+                  question: "Any point lying strictly inside the Production Possibility Frontier indicates:",
+                  options: [
+                    "Productive efficiency with zero opportunity cost.",
+                    "An unattainable output combination given current technology.",
+                    "Productive inefficiency, such as unemployed or misallocated resources.",
+                    "Maximum social welfare."
+                  ],
+                  correct: 2,
+                  explanation: "Points on the curve are efficient; inside are inefficient; outside are unattainable."
+                }
+              ]
+            },
+            {
+              setId: "ch1_set3",
+              setName: "Exam Set 3: Market Equilibrium & Disequilibrium",
+              questions: [
+                {
+                  question: "If the prevailing market price is above equilibrium (P > P*), what market condition develops?",
+                  options: [
+                    "A shortage occurs, bidding the price further upward.",
+                    "A surplus occurs, putting downward competitive pressure on price toward P*.",
+                    "The demand curve permanently shifts rightward.",
+                    "Firms immediately produce outside the PPF curve."
+                  ],
+                  correct: 1,
+                  explanation: "When P > P*, Quantity Supplied exceeds Quantity Demanded. Unsold inventory (surplus) causes sellers to cut prices to P*."
+                },
+                {
+                  question: "At the market equilibrium price P* and quantity Q*:",
+                  options: [
+                    "Quantity Demanded equals Quantity Supplied and the market clears completely.",
+                    "Government subsidies must equal sales taxes.",
+                    "The Marginal Rate of Transformation is zero.",
+                    "Excess demand is strictly positive."
+                  ],
+                  correct: 0,
+                  explanation: "Equilibrium occurs where Demand and Supply intersect: Q_D(P*) = Q_S(P*)."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          id: "ch3",
+          number: "Chapter 3",
+          title: "Utility and Choice (& Math Primer)",
+          description: "Consumer preferences, indifference curve properties, Marginal Rate of Substitution (MRS), budget constraints, mathematical optimization via the Lagrangian method, corner solutions, and calculus primer.",
+          studyGuide: [
+            {
+              sectionHeader: "1. The Consumer Choice Framework",
+              subSections: [
+                {
+                  subtitle: "A. Dual Determinants of Consumer Choice",
+                  details: [
+                    "A consumer's purchase decision depends strictly on two primary factors:",
+                    "1. Preferences: What bundles of goods the consumer likes, desires, and prefers (subjective psychological valuation).",
+                    "2. Constraints: What bundles of goods the consumer can afford, dictated by their money income (I) and prevailing market prices (Px, Py)."
+                  ]
+                },
+                {
+                  subtitle: "B. The Ceteris Paribus Principle",
+                  details: [
+                    "Ceteris Paribus: Latin phrase meaning 'all other things being held constant'.",
+                    "In consumer theory, we hold prices of other goods, consumer income, and tastes fixed when isolating the effect of changing consumption of specific commodities."
+                  ]
+                },
+                {
+                  subtitle: "C. Introductory Classroom Icebreaker (Axiom Foundations)",
+                  details: [
+                    "Pairwise Ranking Activity: Comparing apples, oranges, and pears demonstrates how an individual either expresses a strict preference (A ≻ B) or indifference (A ~ B), forming the foundation of Completeness.",
+                    "Circular Test: If a student prefers Apples to Oranges and Oranges to Pears, but Pears to Apples, their choices become cyclical and money-pumpable, proving why Transitivity is required for rational choice.",
+                    "Bundles of Commodities: Comparing bundles of goods (e.g., Sodas vs. Burgers) illustrates why consumers demand diversification (Convexity) rather than extreme single-item consumption."
+                  ]
+                }
+              ]
+            },
+            {
+              sectionHeader: "2. The Axioms of Rational Preferences",
+              subSections: [
+                {
+                  subtitle: "A. Completeness (Rankability)",
+                  details: [
+                    "For any two consumption bundles A and B in the choice set, a consumer can always compare and rank them.",
+                    "The consumer strictly prefers A to B (A ≻ B), strictly prefers B to A (B ≻ A), or is completely indifferent between them (A ~ B).",
+                    "Economic intuition: The consumer is never in a state of paralysis or indecision."
+                  ]
+                },
+                {
+                  subtitle: "B. Transitivity (Logical Consistency)",
+                  details: [
+                    "If a consumer prefers bundle A to bundle B (A ≻ B) and prefers bundle B to bundle C (B ≻ C), then the consumer MUST prefer bundle A to bundle C (A ≻ C).",
+                    "Similarly, if A ~ B and B ~ C, then A ~ C.",
+                    "Significance: Prevents circular choice loops and guarantees that indifference curves cannot cross each other."
+                  ]
+                },
+                {
+                  subtitle: "C. Non-Satiation ('More is Better')",
+                  details: [
+                    "Consumers always prefer more of any economic good to less.",
+                    "If bundle A contains at least as much of all goods as bundle B and strictly more of at least one good, then bundle A is strictly preferred to bundle B.",
+                    "Geometric result: Indifference curves must have negative slopes (downward sloping) and higher indifference curves represent higher utility."
+                  ]
+                },
+                {
+                  subtitle: "D. Convexity ('Averages Preferred to Extremes')",
+                  details: [
+                    "Consumers prefer well-balanced, diversified consumption bundles over extreme, single-good concentrations.",
+                    "Formally: If bundle A and bundle B yield equal utility (A ~ B), then any weighted average bundle C = αA + (1 - α)B (with 0 < α < 1) yields strictly greater utility than either extreme: U(C) > U(A).",
+                    "Geometric result: Indifference curves are strictly convex to the origin, reflecting diminishing Marginal Rate of Substitution (MRS)."
+                  ]
+                }
+              ]
+            },
+            {
+              sectionHeader: "3. Indifference Curves and Marginal Rate of Substitution (MRS)",
+              subSections: [
+                {
+                  subtitle: "A. Definition & Standard Properties of Indifference Curves",
+                  details: [
+                    "An Indifference Curve (IC) connects all combinations of two goods (X and Y) that yield the exact same level of total utility: U(X, Y) = U_bar.",
+                    "Property 1 (Negative Slope): Sacrificing some of good Y requires more of good X to maintain constant overall utility.",
+                    "Property 2 (Higher Curves Preferred): Indifference curves located farther northeast represent strictly higher utility due to non-satiation.",
+                    "Property 3 (Cannot Intersect): If two ICs intersected, it would violate transitivity and non-satiation simultaneously.",
+                    "Property 4 (Diminishing Slope / Convexity): As you consume more X and less Y along an IC, the curve flattens."
+                  ]
+                },
+                {
+                  subtitle: "B. Marginal Rate of Substitution (MRS) Mathematical Derivation",
+                  details: [
+                    "MRS measures the rate at which a consumer is willing to give up good Y in exchange for an additional unit of good X while maintaining constant utility.",
+                    "Geometrically: MRS is the negative of the slope of the indifference curve: MRS = -dY/dX | U=const.",
+                    "Mathematical Proof via Total Differential: Along any indifference curve, total utility change dU = 0.",
+                    "dU = (∂U/∂X) dX + (∂U/∂Y) dY = 0",
+                    "MU_X dX + MU_Y dY = 0  =>  -dY / dX = MU_X / MU_Y",
+                    "Therefore: MRS_XY = MU_X / MU_Y.",
+                    "Diminishing MRS: As X increases and Y decreases, MU_X falls (diminishing marginal returns) and MU_Y rises (Y becomes scarcer), so the ratio MU_X / MU_Y decreases."
+                  ]
+                },
+                {
+                  subtitle: "C. Geometric Interpretation & Graphing Intuition of Preference Strength",
+                  details: [
+                    "Tangency Slope: The tangent line at any point on the IC has slope = -MRS.",
+                    "Flatter Indifference Curve: Consumer has a relatively stronger preference for the good on the Y-axis (willing to give up very little Y for a large amount of X).",
+                    "Steeper Indifference Curve: Consumer has a relatively stronger preference for the good on the X-axis (willing to give up a lot of Y for a small increment of X).",
+                    "Why Tangency vs. Intersection: An intersecting budget line means the line passes inside the IC, creating an area where higher indifference curves are affordable. Only at tangency is the highest reachable IC achieved."
+                  ]
+                }
+              ]
+            },
+            {
+              sectionHeader: "4. Special Preference Shapes and Non-Standard Goods",
+              subSections: [
+                {
+                  subtitle: "A. Perfect Substitutes",
+                  details: [
+                    "Utility Function: U(X, Y) = αX + βY.",
+                    "Indifference curves are straight, downward-sloping linear lines.",
+                    "Constant MRS: MRS = α / β everywhere.",
+                    "Consumer is willing to substitute X for Y at a fixed constant ratio regardless of consumption level."
+                  ]
+                },
+                {
+                  subtitle: "B. Perfect Complements (Leontief Preferences)",
+                  details: [
+                    "Utility Function: U(X, Y) = min(αX, βY).",
+                    "Goods consumed in strictly fixed proportions (e.g., shoes, popcorn & movie tickets).",
+                    "Indifference curves are L-shaped right angles.",
+                    "Vertex Condition: Optimal consumption occurs along the ray αX = βY. Consuming additional units of one good alone yields Marginal Utility MU = 0."
+                  ]
+                },
+                {
+                  subtitle: "C. Neutral Goods & Economic Bads",
+                  details: [
+                    "Neutral Good (Useless Good): Marginal utility is zero (MU = 0). ICs are horizontal straight lines (if X is neutral) or vertical straight lines (if Y is neutral).",
+                    "Economic Bad: Commodity the consumer dislikes (e.g., pollution, risk). Indifference curves slope upward because more of the bad must be compensated by more of the good to maintain welfare."
+                  ]
+                }
+              ]
+            },
+            {
+              sectionHeader: "5. The Budget Constraint and Affordable Set",
+              subSections: [
+                {
+                  subtitle: "A. Algebraic Formulation",
+                  details: [
+                    "Budget Equation: P_X * X + P_Y * Y ≤ I.",
+                    "Assuming non-satiation, the consumer spends all income: P_X * X + P_Y * Y = I.",
+                    "Solving for Y: Y = (I / P_Y) - (P_X / P_Y) * X.",
+                    "Vertical Intercept: I / P_Y (maximum units of Y affordable if X = 0).",
+                    "Horizontal Intercept: I / P_X (maximum units of X affordable if Y = 0).",
+                    "Economic Slope: -P_X / P_Y, representing the market opportunity cost or relative price ratio."
+                  ]
+                },
+                {
+                  subtitle: "B. Changes in Income vs. Changes in Price",
+                  details: [
+                    "Income Change (ΔI): Produces a parallel shift of the budget line outward (increase) or inward (decrease) with no change in slope.",
+                    "Price Change (ΔP_X): Changes the slope (-P_X / P_Y) and rotates/pivots the budget line around the vertical intercept (I / P_Y)."
+                  ]
+                }
+              ]
+            },
+            {
+              sectionHeader: "6. Mathematical Utility Maximization & Optimization Methods",
+              subSections: [
+                {
+                  subtitle: "A. The Interior Optimum (Tangency Condition)",
+                  details: [
+                    "To maximize utility subject to the budget constraint, an interior solution requires two simultaneous conditions:",
+                    "1. Budget Exhaustion: P_X * X* + P_Y * Y* = I.",
+                    "2. Tangency Condition: MRS = P_X / P_Y  <=>  MU_X / MU_Y = P_X / P_Y.",
+                    "Equi-Marginal Principle: (MU_X / P_X) = (MU_Y / P_Y). The marginal utility per dollar spent must be identical across all goods consumed."
+                  ]
+                },
+                {
+                  subtitle: "B. Lagrangian Multiplier Method (Formal Analytical Solution)",
+                  details: [
+                    "Optimization Problem: Maximize U(X, Y) subject to P_X*X + P_Y*Y = I.",
+                    "1. Construct the Lagrangian Function: L(X, Y, λ) = U(X, Y) + λ * (I - P_X*X - P_Y*Y).",
+                    "2. First-Order Necessary Conditions (FOC):",
+                    "   • ∂L/∂X = ∂U/∂X - λ*P_X = 0  =>  MU_X = λ*P_X  =>  λ = MU_X / P_X",
+                    "   • ∂L/∂Y = ∂U/∂Y - λ*P_Y = 0  =>  MU_Y = λ*P_Y  =>  λ = MU_Y / P_Y",
+                    "   • ∂L/∂λ = I - P_X*X - P_Y*Y = 0  =>  P_X*X + P_Y*Y = I",
+                    "3. Equating the expressions for λ yields: MU_X / P_X = MU_Y / P_Y  =>  MU_X / MU_Y = P_X / P_Y (Tangency Condition).",
+                    "4. Economic Meaning of λ: λ = ∂U* / ∂I. It represents the Marginal Utility of Income—the additional utility gained if consumer income increases by $1."
+                  ]
+                },
+                {
+                  subtitle: "C. Disequilibrium Adjustment Dynamics",
+                  details: [
+                    "Case 1 (MRS > P_X / P_Y): The subjective valuation of X exceeds the market price ratio. The consumer gains utility by buying MORE X and LESS Y until equality is restored.",
+                    "Case 2 (MRS < P_X / P_Y): The market cost of X exceeds subjective valuation. The consumer gains utility by buying LESS X and MORE Y until equality is restored."
+                  ]
+                },
+                {
+                  subtitle: "D. Corner Solutions (Boundary Optimum)",
+                  details: [
+                    "A corner solution occurs when MRS ≠ P_X / P_Y throughout the viable consumption domain, typically with linear indifference curves (Perfect Substitutes) or extreme curvature.",
+                    "Condition 1: If MU_X / P_X > MU_Y / P_Y everywhere (MRS > P_X / P_Y): Good X delivers more utility per dollar than Good Y. The consumer spends all income on Good X: X* = I / P_X, Y* = 0.",
+                    "Condition 2: If MU_Y / P_Y > MU_X / P_X everywhere (MRS < P_X / P_Y): Good Y delivers more utility per dollar. The consumer spends all income on Good Y: X* = 0, Y* = I / P_Y."
+                  ]
+                }
+              ]
+            },
+            {
+              sectionHeader: "7. Mathematical Primer (Calculus for Microeconomics)",
+              subSections: [
+                {
+                  subtitle: "A. Concept of the Derivative as a Marginal Value",
+                  details: [
+                    "In economics, every 'marginal' concept is mathematically the first derivative of the corresponding 'total' function.",
+                    "Marginal Utility MU = dU / dQ; Marginal Cost MC = dTC / dQ; Marginal Revenue MR = dTR / dQ.",
+                    "Economic Meaning of Derivative: The instantaneous rate of change of the dependent economic variable with respect to a one-unit change in the independent variable."
+                  ]
+                },
+                {
+                  subtitle: "B. Fundamental Rules of Differentiation",
+                  details: [
+                    "1. Power Rule: d(x^n) / dx = n * x^(n - 1). Examples: d(x^-1)/dx = -x^-2; d(x^(3/2))/dx = (3/2)*x^(1/2).",
+                    "2. Constant Rule: d(c) / dx = 0.",
+                    "3. Sum and Difference Rule: d[f(x) ± g(x)] / dx = f'(x) ± g'(x).",
+                    "4. Product Rule: d[u(x) * v(x)] / dx = u'(x)*v(x) + u(x)*v'(x).",
+                    "   Application: Total Revenue TR = P(q) * q => MR = d(TR)/dq = P'(q)*q + P(q).",
+                    "5. Partial Differentiation: When calculating MU_X from U(X, Y), treat Y as an invariant constant and differentiate solely with respect to X."
+                  ]
+                }
+              ]
+            }
+          ],
+          summary: [
+            {
+              title: "Axioms of Preferences",
+              content: "• Completeness: Rank any A & B.\n• Transitivity: A ≻ B and B ≻ C => A ≻ C.\n• Non-satiation: More is strictly preferred.\n• Convexity: Averages preferred to extremes."
+            },
+            {
+              title: "Marginal Rate of Substitution",
+              content: "MRS = -dY/dX | U=const = MU_X / MU_Y.\nMeasures willingness to trade good Y for 1 unit of X."
+            },
+            {
+              title: "Budget Constraint",
+              content: "P_X * X + P_Y * Y = I.\n• Slope = -P_X / P_Y (Market trade-off)\n• Intercepts: Y_max = I / P_Y; X_max = I / P_X."
+            },
+            {
+              title: "Utility Maximization Condition",
+              content: "Interior Optimum: MRS = P_X / P_Y <=> MU_X / P_X = MU_Y / P_Y.\nCorner Optimum: If MU_X/P_X > MU_Y/P_Y => Spend all on X."
+            },
+            {
+              title: "Lagrangian Method",
+              content: "L = U(X, Y) + λ(I - P_X*X - P_Y*Y)\nFOC: MU_X/P_X = MU_Y/P_Y = λ.\nλ = Marginal Utility of Income (∂U*/∂I)."
+            }
+          ],
+          slideExercises: [
+            {
+              id: "ex3_1",
+              title: "Exercise 1: Perfect Complements (Popcorn & Movies)",
+              problem: "A consumer's preferences are given by U(M, C) = min(2M, C), where M is movies and C is popcorn bags.\n1. How many utils do you get from 3 movies and 6 popcorns?\n2. How many utils from 3 movies and 8 popcorns?\n3. If P_M = $10, P_C = $2.50, and Income I = $30, find the utility-maximizing consumption bundle (M*, C*).",
+              solution: "Step 1: Evaluation at (3, 6)\nU(3, 6) = min(2*3, 6) = min(6, 6) = 6 utils.\n\nStep 2: Evaluation at (3, 8)\nU(3, 8) = min(2*3, 8) = min(6, 8) = 6 utils.\n(Note: The 2 additional popcorns yield 0 marginal utility without additional movies).\n\nStep 3: Utility Maximization\n• Vertex condition for perfect complements: 2M = C\n• Budget constraint: P_M * M + P_C * C = I  =>  10*M + 2.50*C = 30\n• Substitute C = 2M into the budget equation:\n  10M + 2.50(2M) = 30\n  10M + 5M = 30\n  15M = 30  =>  M* = 2 movies\n• Popcorn consumption:\n  C* = 2 * M* = 2 * 2 = 4 popcorn bags\n• Resulting Maximized Utility:\n  U* = min(2*2, 4) = 4 utils."
+            },
+            {
+              id: "ex3_2",
+              title: "Exercise 2: Cobb-Douglas Utility Maximization",
+              problem: "Suppose a person's utility function is U(X, Y) = (X * Y)^(1/2). They have an income of $30, P_X = $1.50, and P_Y = $3.00. Solve for the optimal bundle (X*, Y*).",
+              solution: "Step 1: Compute Marginal Utilities (MU)\n• MU_X = ∂U/∂X = 0.5 * X^(-0.5) * Y^(0.5)\n• MU_Y = ∂U/∂Y = 0.5 * X^(0.5) * Y^(-0.5)\n\nStep 2: Calculate Marginal Rate of Substitution (MRS)\n• MRS = MU_X / MU_Y = [0.5 * X^(-0.5) * Y^(0.5)] / [0.5 * X^(0.5) * Y^(-0.5)] = Y / X\n\nStep 3: Tangency Optimization Condition\n• Set MRS = P_X / P_Y\n  Y / X = 1.50 / 3.00 = 1 / 2  =>  X = 2Y\n\nStep 4: Substitute into Budget Constraint\n• 1.50 * X + 3.00 * Y = 30\n• 1.50 * (2Y) + 3.00 * Y = 30\n• 3Y + 3Y = 30  =>  6Y = 30  =>  Y* = 5\n• Solve for X*:\n  X* = 2 * (5) = 10\n\nOptimal Bundle: X* = 10 units, Y* = 5 units."
+            },
+            {
+              id: "ex3_3",
+              title: "Exercise 3: Corner Solution Analysis (From Lecture & Handwritten Notes)",
+              problem: "A consumer considers two perfect substitute goods: M and E. Suppose the utility function is U(M, E) = M + E, so MRS = 1. The consumer has an income I = $30. The market prices are P_M = $3.25 and P_E = $3.00.\n1. Calculate the slope of the budget constraint.\n2. Compare the slope of the budget constraint with MRS.\n3. Determine the optimal consumption bundle (M*, E*) and show whether a corner solution occurs.",
+              solution: "Step 1: Budget Constraint Slope\n• Budget constraint equation: 3.25*M + 3.00*E = 30\n• Slope of Budget Constraint (in absolute terms) = P_M / P_E = 3.25 / 3.00 ≈ 1.083.\n\nStep 2: Compare MRS with Price Ratio\n• MRS = MU_M / MU_E = 1 / 1 = 1.00.\n• Comparing ratios: MRS (1.00) < P_M / P_E (1.083).\n• Alternatively, compare marginal utility per dollar:\n  MU_M / P_M = 1 / 3.25 ≈ 0.308 utils/$\n  MU_E / P_E = 1 / 3.00 ≈ 0.333 utils/$\n  => MU_E / P_E > MU_M / P_M.\n\nStep 3: Determination of Optimum Bundle\n• Since good E yields higher utility per dollar spent across all units, the consumer will spend 100% of income on good E and zero on good M.\n• Optimal Good E: E* = I / P_E = 30 / 3.00 = 10 units.\n• Optimal Good M: M* = 0 units.\n\nConclusion: A Corner Solution occurs at (M* = 0, E* = 10). The highest attainable indifference curve touches the budget line at the vertical intercept on the E-axis."
+            },
+            {
+              id: "ex3_4",
+              title: "Exercise 4: Differentiation Primer (Power & Sum Rules)",
+              problem: "Calculate the exact derivative of y = x^(3/2) - 7x^4 + 5 with respect to x using calculus rules.",
+              solution: "Differentiate each term independently:\n1. Power Rule on first term: d(x^(3/2))/dx = (3/2) * x^(3/2 - 1) = (3/2) * x^(1/2)\n2. Power Rule on second term: d(-7x^4)/dx = -7 * 4 * x^(4 - 1) = -28x^3\n3. Constant Rule on third term: d(5)/dx = 0\n\nCombined Analytical Derivative:\ndy/dx = (3/2) * x^(1/2) - 28x^3."
+            },
+            {
+              id: "ex3_5",
+              title: "Exercise 5: Marginal Revenue Formula Derivation (Product Rule)",
+              problem: "Derive the general expression for Marginal Revenue (MR) given Total Revenue TR = P(q) * q using the calculus product rule.",
+              solution: "Let TR(q) = u(q) * v(q), where u(q) = P(q) and v(q) = q.\n\nApplying Product Rule: d(u*v)/dq = u'v + uv'\n• MR = d(TR)/dq = [d(P(q))/dq] * q + P(q) * [dq/dq]\n\nSince dq/dq = 1:\nMR = P'(q) * q + P(q)\n\nEconomic Meaning: Marginal Revenue consists of the price received for the additional unit P(q), minus the revenue loss on all previous units resulting from price depression P'(q) * q."
+            }
+          ],
+          flashcards: [
+            {
+              front: "Utility Function",
+              back: "A mathematical function U(X, Y) assigning numerical values to consumption bundles such that preferred bundles receive higher numbers."
+            },
+            {
+              front: "Axiom of Completeness",
+              back: "A consumer can compare and rank any two bundles: A ≻ B, B ≻ A, or A ~ B."
+            },
+            {
+              front: "Axiom of Transitivity",
+              back: "Logical consistency in preference: If A ≻ B and B ≻ C, then A ≻ C."
+            },
+            {
+              front: "Marginal Rate of Substitution (MRS)",
+              back: "The rate at which a consumer is willing to give up good Y for an additional unit of good X while maintaining equal utility: MRS = MU_X / MU_Y."
+            },
+            {
+              front: "Tangency Condition",
+              back: "MRS = P_X / P_Y, equating the subjective rate of substitution to the market rate of exchange."
+            },
+            {
+              front: "Lagrange Multiplier (λ)",
+              back: "The shadow price or Marginal Utility of Income (∂U*/∂I), showing utility gained per additional dollar of income."
+            },
+            {
+              front: "Corner Solution",
+              back: "An optimal consumption bundle where the consumer spends all income on one good because MU_X/P_X ≠ MU_Y/P_Y everywhere."
+            },
+            {
+              front: "Leontief Preferences",
+              back: "Perfect complements represented by U = min(αX, βY), forming L-shaped indifference curves."
+            }
+          ],
+          quizSets: [
+            {
+              setId: "ch3_set1",
+              setName: "Exam Set 1: Preference Axioms & Indifference Curves",
+              questions: [
+                {
+                  question: "What does the Axiom of Transitivity guarantee in consumer preference theory?",
+                  options: [
+                    "Consumers spend all income on the cheapest commodity.",
+                    "Indifference curves cannot intersect, preventing circular preference cycles.",
+                    "Marginal rate of substitution is always equal to 1.",
+                    "Consumers are completely indifferent between all available bundles."
+                  ],
+                  correct: 1,
+                  explanation: "Transitivity (If A ≻ B and B ≻ C => A ≻ C) ensures consistency and prevents intersecting indifference curves."
+                },
+                {
+                  question: "What does a flatter indifference curve imply about consumer tastes?",
+                  options: [
+                    "A relatively stronger preference for the good on the Y-axis.",
+                    "A relatively stronger preference for the good on the X-axis.",
+                    "Both goods violate the transitivity axiom.",
+                    "Both goods are perfect substitutes with slope -1."
+                  ],
+                  correct: 0,
+                  explanation: "Slide verbatim: 'The flatter (steeper) the indifference curve the stronger the preference for the good on the Y-axis (X-axis).'"
+                },
+                {
+                  question: "Why do standard indifference curves exhibit a diminishing Marginal Rate of Substitution (MRS)?",
+                  options: [
+                    "Because goods are consumed in fixed 1:1 ratios.",
+                    "Because consumers prefer averages to extremes (convexity), meaning goods become scarcer as consumption is reduced.",
+                    "Because income automatically increases as you move along the curve.",
+                    "Because total utility increases as you move southeast along the curve."
+                  ],
+                  correct: 1,
+                  explanation: "Convexity implies that as X rises and Y falls, MU_X decreases and MU_Y increases, causing MRS = MU_X/MU_Y to decline."
+                }
+              ]
+            },
+            {
+              setId: "ch3_set2",
+              setName: "Exam Set 2: Budget Constraints & Calculus Optimization",
+              questions: [
+                {
+                  question: "In the Lagrangian optimization L = U(X,Y) + λ(I - PxX - PyY), what is the economic interpretation of λ?",
+                  options: [
+                    "The price elasticity of demand for good X.",
+                    "The Marginal Utility of Income (∂U*/∂I), showing extra utility per additional dollar of budget.",
+                    "The general inflation rate in the goods market.",
+                    "The percentage of income allocated to luxury commodities."
+                  ],
+                  correct: 1,
+                  explanation: "λ = MU_X/P_X = MU_Y/P_Y = ∂U*/∂I, measuring the shadow price or marginal utility of money income."
+                },
+                {
+                  question: "What happens to the budget line if income increases while both goods' prices remain constant?",
+                  options: [
+                    "It rotates around the horizontal intercept.",
+                    "It rotates around the vertical intercept.",
+                    "It shifts parallel outward away from the origin.",
+                    "Its slope increases from -Px/Py to 0."
+                  ],
+                  correct: 2,
+                  explanation: "With unchanged prices, slope -Px/Py remains constant while intercepts (I/Px, I/Py) increase, causing a parallel outward shift."
+                },
+                {
+                  question: "Using the product rule on Total Revenue TR = P(q) * q, what is Marginal Revenue MR?",
+                  options: [
+                    "MR = P(q) / q",
+                    "MR = P'(q) * q + P(q)",
+                    "MR = P'(q) + q",
+                    "MR = P(q)^2 * q"
+                  ],
+                  correct: 1,
+                  explanation: "By calculus product rule: d(TR)/dq = [dP/dq]*q + P*[dq/dq] = P'(q)*q + P(q)."
+                }
+              ]
+            },
+            {
+              setId: "ch3_set3",
+              setName: "Exam Set 3: Non-Standard Preferences & Corner Solutions",
+              questions: [
+                {
+                  question: "Given utility function U(M, C) = min(2M, C). If you consume 3 movies and 8 popcorns, how many utils do you receive?",
+                  options: [
+                    "8 utils",
+                    "14 utils",
+                    "6 utils",
+                    "24 utils"
+                  ],
+                  correct: 2,
+                  explanation: "U(3, 8) = min(2*3, 8) = min(6, 8) = 6 utils (extra popcorn beyond 6 provides zero marginal utility)."
+                },
+                {
+                  question: "If a consumer views two goods as perfect substitutes with MRS = 1, P_M = $3.25, P_E = $3.00, and Income = $30, what is the optimal bundle?",
+                  options: [
+                    "Buy only good M (M* = 9.23, E* = 0).",
+                    "Buy only good E (M* = 0, E* = 10).",
+                    "Split income equally (M* = 4.61, E* = 5).",
+                    "A tangency solution with equal marginal rates."
+                  ],
+                  correct: 1,
+                  explanation: "MU_E/P_E = 1/3.00 = 0.333 > MU_M/P_M = 1/3.25 = 0.308. Good E yields more utility per dollar, resulting in a corner solution at (0, 10)."
+                },
+                {
+                  question: "If an indifference curve has a positive slope throughout, what does it signify?",
+                  options: [
+                    "Both goods are perfect substitutes.",
+                    "One of the goods is an 'Economic Bad' that the consumer dislikes.",
+                    "The consumer has reached satiation on both goods.",
+                    "The budget constraint has pivoted."
+                  ],
+                  correct: 1,
+                  explanation: "If a commodity is an economic bad (e.g. pollution), receiving more of it requires more of the good item to keep utility unchanged, yielding a positive slope."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    /* ==========================================================================
+       SPA CONTROLLER & STATE
+       ========================================================================== */
+    let currentChapterId = courseData.chapters[0].id;
+    let activeTab = "fullStudyGuide";
+    let currentCardIndex = 0;
+    let cardList = [];
+    let isFlipped = false;
+    
+    // Quiz State
+    let activeQuizSetIndex = 0;
+    let userQuizAnswers = {};
+
+    // Interactive Graph State Parameters (Cobb-Douglas U = X^0.5 * Y^0.5)
+    let simIncome = 30;
+    let simPx = 1.5;
+    let simPy = 3.0;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      initSidebar();
+      renderContent();
+
+      // Mobile Menu Handler
+      const mobileBtn = document.getElementById("mobileMenuBtn");
+      const sidebar = document.getElementById("sidebar");
+      mobileBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("-translate-x-full");
+      });
+    });
+
+    function initSidebar() {
+      const select = document.getElementById("chapterSelect");
+      select.innerHTML = courseData.chapters.map(c => `
+        <option value="${c.id}">${c.number}: ${c.title}</option>
+      `).join("");
+      select.value = currentChapterId;
+    }
+
+    function switchChapter(chapterId) {
+      currentChapterId = chapterId;
+      currentCardIndex = 0;
+      isFlipped = false;
+      activeQuizSetIndex = 0;
+      userQuizAnswers = {};
+
+      const chap = getCurrentChapter();
+      document.getElementById("currentChapterHeading").textContent = `${chap.number}: ${chap.title}`;
+      document.getElementById("chapterSelect").value = chapterId;
+      renderContent();
+    }
+
+    function switchTab(tabId) {
+      activeTab = tabId;
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        if (btn.getAttribute("data-tab") === tabId) {
+          btn.className = "tab-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-lg text-sm font-medium transition-all bg-brand-600 text-white shadow-md";
+        } else {
+          btn.className = "tab-btn w-full flex items-center space-x-3 px-3.5 py-3 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-800 hover:text-slate-100";
+        }
+      });
+
+      if (window.innerWidth < 768) {
+        document.getElementById("sidebar").classList.add("-translate-x-full");
+      }
+      renderContent();
+    }
+
+    function getCurrentChapter() {
+      return courseData.chapters.find(c => c.id === currentChapterId);
+    }
+
+    /* ==========================================================================
+       VIEW GENERATORS
+       ========================================================================== */
+    function renderContent() {
+      const container = document.getElementById("mainContainer");
+      const chap = getCurrentChapter();
+
+      switch (activeTab) {
+        case "fullStudyGuide":
+          container.innerHTML = renderFullStudyGuide(chap);
+          break;
+        case "simulator":
+          container.innerHTML = renderSimulatorView();
+          initCanvasGraph();
+          break;
+        case "summary":
+          container.innerHTML = renderSummaryView(chap);
+          break;
+        case "exercises":
+          container.innerHTML = renderExercisesView(chap);
+          break;
+        case "flashcards":
+          cardList = [...chap.flashcards];
+          container.innerHTML = renderFlashcardView();
+          break;
+        case "quiz":
+          container.innerHTML = renderQuizView(chap);
+          break;
+      }
+    }
+
+    /* 1. Full Study Guide (100% Comprehensive Textbook View) */
+    function renderFullStudyGuide(chap) {
+      return `
+        <div class="max-w-4xl mx-auto space-y-8 pb-12">
+          <div class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="flex items-center space-x-3 mb-3">
+              <span class="px-3 py-1 bg-brand-100 text-brand-700 text-xs font-bold rounded-full uppercase tracking-wider">${chap.number}</span>
+              <span class="text-xs text-slate-400 font-medium">Standard Study Guide • Academic Specification</span>
+            </div>
+            <h1 class="text-2xl sm:text-3xl font-black text-slate-900 mb-3">${chap.title}</h1>
+            <p class="text-sm text-slate-600 leading-relaxed">${chap.description}</p>
+          </div>
+
+          <div class="space-y-6">
+            ${chap.studyGuide.map((sec, secIdx) => `
+              <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="bg-slate-900 text-white px-6 py-4">
+                  <h3 class="text-base sm:text-lg font-bold">${sec.sectionHeader}</h3>
+                </div>
+                <div class="p-6 space-y-6 divide-y divide-slate-100">
+                  ${sec.subSections.map(sub => `
+                    <div class="pt-5 first:pt-0">
+                      <h4 class="text-sm font-bold text-brand-700 uppercase tracking-wide mb-3 flex items-center">
+                        <i class="fa-solid fa-angle-right mr-2 text-xs"></i>
+                        ${sub.subtitle}
+                      </h4>
+                      <ul class="space-y-2.5">
+                        ${sub.details.map(item => `
+                          <li class="flex items-start text-sm text-slate-700">
+                            <span class="w-1.5 h-1.5 rounded-full bg-brand-500 mt-2 mr-3 flex-shrink-0"></span>
+                            <span class="leading-relaxed font-normal">${item}</span>
+                          </li>
+                        `).join("")}
+                      </ul>
+                    </div>
+                  `).join("")}
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    /* 2. Interactive Grapher (Interactive Sliders & Dynamic Canvas) */
+    function renderSimulatorView() {
+      return `
+        <div class="max-w-5xl mx-auto space-y-6 pb-12">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+            <h2 class="text-xl font-bold text-slate-900 flex items-center">
+              <i class="fa-solid fa-chart-area mr-2.5 text-brand-600"></i>
+              Interactive Optimization & Budget Line Simulator
+            </h2>
+            <p class="text-xs text-slate-500 mt-1">
+              Dynamically manipulate sliders to observe how changes in Income (I) shift the budget line, and changes in Prices (Px, Py) rotate it, altering the optimal tangency choice (X*, Y*).
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Controls Panel -->
+            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+              <h3 class="font-bold text-slate-900 text-sm uppercase tracking-wider border-b pb-2 text-brand-600">Parameter Controls</h3>
+
+              <div>
+                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1.5">
+                  <span>Income (I)</span>
+                  <span id="valIncome" class="font-mono text-brand-600">$30</span>
+                </div>
+                <input type="range" id="sliderIncome" min="10" max="60" step="1" value="30" oninput="updateSimulation()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600">
+                <span class="text-[10px] text-slate-400 block mt-1">Shifts budget line parallel inward/outward</span>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1.5">
+                  <span>Price of Good X (Px)</span>
+                  <span id="valPx" class="font-mono text-brand-600">$1.50</span>
+                </div>
+                <input type="range" id="sliderPx" min="0.5" max="5.0" step="0.25" value="1.5" oninput="updateSimulation()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600">
+                <span class="text-[10px] text-slate-400 block mt-1">Rotates/pivots around vertical intercept</span>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-1.5">
+                  <span>Price of Good Y (Py)</span>
+                  <span id="valPy" class="font-mono text-brand-600">$3.00</span>
+                </div>
+                <input type="range" id="sliderPy" min="1.0" max="6.0" step="0.25" value="3.0" oninput="updateSimulation()" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-600">
+                <span class="text-[10px] text-slate-400 block mt-1">Rotates/pivots around horizontal intercept</span>
+              </div>
+
+              <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs space-y-2 font-mono">
+                <div class="text-slate-500 font-bold uppercase text-[10px] tracking-wider mb-1">Analytical Solution</div>
+                <div class="flex justify-between text-slate-700">
+                  <span>Budget Slope (-Px/Py):</span>
+                  <span id="calcSlope" class="font-bold text-slate-900">-0.50</span>
+                </div>
+                <div class="flex justify-between text-slate-700">
+                  <span>X Intercept (I/Px):</span>
+                  <span id="calcXInt" class="font-bold text-slate-900">20.0 units</span>
+                </div>
+                <div class="flex justify-between text-slate-700">
+                  <span>Y Intercept (I/Py):</span>
+                  <span id="calcYInt" class="font-bold text-slate-900">10.0 units</span>
+                </div>
+                <div class="border-t border-slate-200 pt-2 flex justify-between text-emerald-700 font-bold">
+                  <span>Optimum Bundle (X*, Y*):</span>
+                  <span id="calcOptimum">(10.0, 5.0)</span>
+                </div>
+                <div class="flex justify-between text-brand-700 font-bold">
+                  <span>Max Utility U*:</span>
+                  <span id="calcUtility">7.07 utils</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Interactive Canvas Display -->
+            <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col items-center">
+              <div class="w-full flex justify-between items-center mb-3 text-xs">
+                <div class="flex items-center space-x-4">
+                  <span class="flex items-center"><span class="w-3 h-0.5 bg-blue-600 mr-1.5"></span> Budget Line</span>
+                  <span class="flex items-center"><span class="w-3 h-0.5 bg-emerald-500 mr-1.5"></span> Indifference Curve (U*)</span>
+                  <span class="flex items-center"><span class="w-2.5 h-2.5 rounded-full bg-rose-600 mr-1.5"></span> Optimum (X*, Y*)</span>
+                </div>
+                <button onclick="resetSliders()" class="text-brand-600 hover:underline text-[11px] font-semibold">Reset Defaults</button>
+              </div>
+              <div class="w-full aspect-[4/3] max-w-[550px] relative bg-slate-50 border border-slate-200 rounded-xl overflow-hidden p-2">
+                <canvas id="econCanvas" width="550" height="400" class="w-full h-full block"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function initCanvasGraph() {
+      updateSimulation();
+    }
+
+    function updateSimulation() {
+      const sliderI = document.getElementById("sliderIncome");
+      if (!sliderI) return;
+
+      simIncome = parseFloat(sliderI.value);
+      simPx = parseFloat(document.getElementById("sliderPx").value);
+      simPy = parseFloat(document.getElementById("sliderPy").value);
+
+      document.getElementById("valIncome").textContent = `$${simIncome.toFixed(0)}`;
+      document.getElementById("valPx").textContent = `$${simPx.toFixed(2)}`;
+      document.getElementById("valPy").textContent = `$${simPy.toFixed(2)}`;
+
+      const optX = (0.5 * simIncome) / simPx;
+      const optY = (0.5 * simIncome) / simPy;
+      const optU = Math.sqrt(optX * optY);
+
+      const xInt = simIncome / simPx;
+      const yInt = simIncome / simPy;
+      const slope = -(simPx / simPy);
+
+      document.getElementById("calcSlope").textContent = slope.toFixed(2);
+      document.getElementById("calcXInt").textContent = `${xInt.toFixed(1)} units`;
+      document.getElementById("calcYInt").textContent = `${yInt.toFixed(1)} units`;
+      document.getElementById("calcOptimum").textContent = `(${optX.toFixed(1)}, ${optY.toFixed(1)})`;
+      document.getElementById("calcUtility").textContent = `${optU.toFixed(2)} utils`;
+
+      drawGraph(xInt, yInt, optX, optY, optU);
+    }
+
+    function resetSliders() {
+      document.getElementById("sliderIncome").value = 30;
+      document.getElementById("sliderPx").value = 1.5;
+      document.getElementById("sliderPy").value = 3.0;
+      updateSimulation();
+    }
+
+    function drawGraph(xInt, yInt, optX, optY, optU) {
+      const canvas = document.getElementById("econCanvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      const W = canvas.width;
+      const H = canvas.height;
+
+      ctx.clearRect(0, 0, W, H);
+
+      const padL = 50, padB = 40, padT = 20, padR = 20;
+      const plotW = W - padL - padR;
+      const plotH = H - padT - padB;
+
+      const maxAxisX = 40;
+      const maxAxisY = 25;
+
+      const toX = (val) => padL + (val / maxAxisX) * plotW;
+      const toY = (val) => (H - padB) - (val / maxAxisY) * plotH;
+
+      ctx.strokeStyle = "#e2e8f0";
+      ctx.lineWidth = 1;
+      for (let x = 5; x <= maxAxisX; x += 5) {
+        ctx.beginPath();
+        ctx.moveTo(toX(x), toY(0));
+        ctx.lineTo(toX(x), toY(maxAxisY));
+        ctx.stroke();
+      }
+      for (let y = 5; y <= maxAxisY; y += 5) {
+        ctx.beginPath();
+        ctx.moveTo(toX(0), toY(y));
+        ctx.lineTo(toX(maxAxisX), toY(y));
+        ctx.stroke();
+      }
+
+      ctx.strokeStyle = "#475569";
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(padL, padT);
+      ctx.lineTo(padL, H - padB);
+      ctx.lineTo(W - padR, H - padB);
+      ctx.stroke();
+
+      ctx.fillStyle = "#334155";
+      ctx.font = "bold 11px sans-serif";
+      ctx.fillText("Quantity of Good X", W / 2 - 40, H - 10);
+      ctx.save();
+      ctx.translate(15, H / 2 + 30);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText("Quantity of Good Y", 0, 0);
+      ctx.restore();
+
+      ctx.strokeStyle = "#2563eb";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(toX(0), toY(yInt));
+      ctx.lineTo(toX(xInt), toY(0));
+      ctx.stroke();
+
+      ctx.strokeStyle = "#10b981";
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      const uSq = optU * optU;
+      let first = true;
+      for (let x = 1; x <= maxAxisX; x += 0.5) {
+        const y = uSq / x;
+        if (y <= maxAxisY + 2) {
+          const px = toX(x);
+          const py = toY(y);
+          if (first) {
+            ctx.moveTo(px, py);
+            first = false;
+          } else {
+            ctx.lineTo(px, py);
+          }
+        }
+      }
+      ctx.stroke();
+
+      ctx.fillStyle = "#e11d48";
+      ctx.beginPath();
+      ctx.arc(toX(optX), toY(optY), 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = "#ffffff";
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.setLineDash([4, 4]);
+      ctx.strokeStyle = "#94a3b8";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(toX(optX), toY(0));
+      ctx.lineTo(toX(optX), toY(optY));
+      ctx.lineTo(toX(0), toY(optY));
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = "#0f172a";
+      ctx.font = "bold 11px sans-serif";
+      ctx.fillText(`Optimum (${optX.toFixed(1)}, ${optY.toFixed(1)})`, toX(optX) + 8, toY(optY) - 8);
+    }
+
+    /* 3. Key Summary Cheat-Sheet */
+    function renderSummaryView(chap) {
+      return `
+        <div class="max-w-4xl mx-auto space-y-6 pb-12">
+          <div class="border-b border-slate-200 pb-4">
+            <h2 class="text-xl font-bold text-slate-900">Key Takeaways & Analytical Formulas</h2>
+            <p class="text-xs text-slate-500">Concise equations and concepts for rapid review</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            ${chap.summary.map(s => `
+              <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center space-x-2 text-brand-600 font-bold text-sm mb-2.5">
+                    <i class="fa-solid fa-bookmark text-xs"></i>
+                    <h4>${s.title}</h4>
+                  </div>
+                  <pre class="font-sans text-xs text-slate-700 whitespace-pre-wrap leading-relaxed">${s.content}</pre>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    /* 4. Slide Exercises */
+    function renderExercisesView(chap) {
+      return `
+        <div class="max-w-4xl mx-auto space-y-6 pb-12">
+          <div class="border-b border-slate-200 pb-4">
+            <h2 class="text-xl font-bold text-slate-900">Slide Problems & Mathematical Solutions</h2>
+            <p class="text-xs text-slate-500">Complete step-by-step calculus proofs and optimization calculations</p>
+          </div>
+
+          <div class="space-y-6">
+            ${chap.slideExercises.map((ex, i) => `
+              <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="bg-slate-900 text-white px-6 py-3.5 flex items-center justify-between">
+                  <span class="font-semibold text-sm flex items-center">
+                    <i class="fa-solid fa-pen-ruler mr-2.5 text-brand-400"></i>
+                    ${ex.title}
+                  </span>
+                  <span class="text-xs px-2.5 py-0.5 rounded bg-slate-800 text-slate-300 font-mono">Problem #${i + 1}</span>
+                </div>
+                <div class="p-6 space-y-4">
+                  <div>
+                    <h5 class="text-xs uppercase font-bold text-slate-400 tracking-wider mb-1.5">Problem Statement</h5>
+                    <div class="bg-slate-50 p-4 rounded-lg text-sm text-slate-800 whitespace-pre-wrap font-medium border border-slate-200/70">${ex.problem}</div>
+                  </div>
+                  <div>
+                    <h5 class="text-xs uppercase font-bold text-emerald-600 tracking-wider mb-1.5">Step-by-Step Solution</h5>
+                    <div class="bg-emerald-50/40 p-4 rounded-lg text-sm text-slate-800 whitespace-pre-wrap font-mono leading-relaxed border border-emerald-100">${ex.solution}</div>
+                  </div>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    /* 5. Flashcards */
+    function renderFlashcardView() {
+      if (!cardList || cardList.length === 0) {
+        return `<div class="text-center py-12 text-slate-400">No flashcards available.</div>`;
+      }
+      const card = cardList[currentCardIndex];
+      return `
+        <div class="max-w-xl mx-auto flex flex-col items-center pb-12">
+          <div class="w-full flex justify-between items-center mb-4 text-xs font-semibold text-slate-500">
+            <span>Card ${currentCardIndex + 1} of ${cardList.length}</span>
+            <button onclick="shuffleCards()" class="hover:text-brand-600 transition flex items-center space-x-1">
+              <i class="fa-solid fa-shuffle"></i>
+              <span>Shuffle Deck</span>
+            </button>
+          </div>
+
+          <div class="w-full h-80 perspective cursor-pointer" onclick="toggleCardFlip()">
+            <div id="flashcardInner" class="relative w-full h-full flip-card-inner rounded-2xl shadow-lg border border-slate-200">
+              <div class="absolute inset-0 w-full h-full bg-white backface-hidden rounded-2xl p-8 flex flex-col justify-between border-2 border-transparent hover:border-brand-300 transition-all">
+                <div class="flex justify-between items-center text-xs font-bold text-brand-600 uppercase tracking-wider">
+                  <span>Economic Term / Concept</span>
+                  <i class="fa-regular fa-lightbulb"></i>
+                </div>
+                <div class="text-center my-auto">
+                  <h3 class="text-2xl font-bold text-slate-900">${card.front}</h3>
+                </div>
+                <div class="text-center text-xs text-slate-400">
+                  <i class="fa-solid fa-arrows-rotate mr-1"></i> Click to flip
+                </div>
+              </div>
+
+              <div class="absolute inset-0 w-full h-full bg-slate-900 text-white backface-hidden rotate-y-180 rounded-2xl p-8 flex flex-col justify-between border-2 border-brand-500 shadow-2xl">
+                <div class="flex justify-between items-center text-xs font-bold text-brand-400 uppercase tracking-wider">
+                  <span>Academic Definition & Context</span>
+                  <i class="fa-solid fa-circle-info"></i>
+                </div>
+                <div class="text-center my-auto">
+                  <p class="text-base text-slate-200 leading-relaxed font-medium">${card.back}</p>
+                </div>
+                <div class="text-center text-xs text-slate-400">
+                  <i class="fa-solid fa-arrows-rotate mr-1"></i> Click to flip back
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-4 mt-6">
+            <button onclick="prevCard()" class="px-5 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-100 text-slate-700 text-sm font-semibold transition shadow-sm disabled:opacity-40" ${currentCardIndex === 0 ? "disabled" : ""}>
+              <i class="fa-solid fa-chevron-left mr-1.5"></i> Previous
+            </button>
+            <button onclick="nextCard()" class="px-6 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white text-sm font-semibold transition shadow-md shadow-brand-500/25 disabled:opacity-40" ${currentCardIndex === cardList.length - 1 ? "disabled" : ""}>
+              Next <i class="fa-solid fa-chevron-right ml-1.5"></i>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function toggleCardFlip() {
+      const inner = document.getElementById("flashcardInner");
+      isFlipped = !isFlipped;
+      if (isFlipped) inner.classList.add("flipped");
+      else inner.classList.remove("flipped");
+    }
+
+    function nextCard() {
+      if (currentCardIndex < cardList.length - 1) {
+        currentCardIndex++;
+        isFlipped = false;
+        renderContent();
+      }
+    }
+
+    function prevCard() {
+      if (currentCardIndex > 0) {
+        currentCardIndex--;
+        isFlipped = false;
+        renderContent();
+      }
+    }
+
+    function shuffleCards() {
+      for (let i = cardList.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cardList[i], cardList[j]] = [cardList[j], cardList[i]];
+      }
+      currentCardIndex = 0;
+      isFlipped = false;
+      renderContent();
+    }
+
+    /* 6. Practice Quiz Sets (Multi-Exam Platform) */
+    function renderQuizView(chap) {
+      const currentSet = chap.quizSets[activeQuizSetIndex];
+      const totalCount = currentSet.questions.length;
+      let score = 0;
+      currentSet.questions.forEach((q, idx) => {
+        if (userQuizAnswers[idx] === q.correct) score++;
+      });
+      const answeredCount = Object.keys(userQuizAnswers).length;
+
+      return `
+        <div class="max-w-3xl mx-auto space-y-6 pb-12">
+          <!-- Quiz Exam Header & Set Selector -->
+          <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <span class="text-xs font-bold text-brand-600 uppercase tracking-wider block mb-1">Multi-Exam Assessment Hub</span>
+              <h2 class="text-xl font-bold text-slate-900">${currentSet.setName}</h2>
+            </div>
+            
+            <div class="flex items-center space-x-3 w-full md:w-auto">
+              <!-- Select Exam Set Dropdown -->
+              <select onchange="switchQuizSet(this.value)" class="bg-slate-100 border border-slate-300 text-slate-800 text-xs rounded-xl p-2.5 font-semibold focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                ${chap.quizSets.map((s, idx) => `
+                  <option value="${idx}" ${idx === activeQuizSetIndex ? "selected" : ""}>${s.setName}</option>
+                `).join("")}
+              </select>
+
+              <!-- Score Indicator -->
+              <div class="bg-brand-50 border border-brand-200 px-3.5 py-2 rounded-xl text-center">
+                <span class="text-[10px] text-brand-500 block uppercase font-bold">Score</span>
+                <span class="text-base font-black text-brand-700">${score}/${totalCount}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Questions List -->
+          <div class="space-y-6">
+            ${currentSet.questions.map((q, qIndex) => {
+              const selected = userQuizAnswers[qIndex];
+              const isAnswered = selected !== undefined;
+              return `
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                  <div class="flex items-start justify-between mb-3">
+                    <span class="text-xs font-bold text-brand-600 bg-brand-50 px-2.5 py-1 rounded-md">Question ${qIndex + 1}</span>
+                  </div>
+                  <h4 class="text-base font-bold text-slate-900 mb-4 leading-snug">${q.question}</h4>
+
+                  <!-- Options -->
+                  <div class="space-y-2.5">
+                    ${q.options.map((opt, optIndex) => {
+                      let btnStyle = "bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100";
+                      let indicator = "";
+
+                      if (isAnswered) {
+                        if (optIndex === q.correct) {
+                          btnStyle = "bg-emerald-50 border-emerald-500 text-emerald-800 font-semibold";
+                          indicator = `<i class="fa-solid fa-check text-emerald-600 ml-auto"></i>`;
+                        } else if (selected === optIndex) {
+                          btnStyle = "bg-rose-50 border-rose-500 text-rose-800 font-semibold";
+                          indicator = `<i class="fa-solid fa-xmark text-rose-600 ml-auto"></i>`;
+                        } else {
+                          btnStyle = "bg-slate-50 border-slate-200 text-slate-400 opacity-60";
+                        }
+                      }
+
+                      return `
+                        <button onclick="handleAnswer(${qIndex}, ${optIndex})" ${isAnswered ? "disabled" : ""} class="w-full text-left p-3.5 rounded-lg border text-sm flex items-center transition-all ${btnStyle}">
+                          <span class="w-6 h-6 rounded-full border border-current flex items-center justify-center text-xs mr-3 flex-shrink-0">
+                            ${String.fromCharCode(65 + optIndex)}
+                          </span>
+                          <span class="flex-1">${opt}</span>
+                          ${indicator}
+                        </button>
+                      `;
+                    }).join("")}
+                  </div>
+
+                  <!-- Feedback Box -->
+                  ${isAnswered ? `
+                    <div class="mt-4 p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 leading-relaxed">
+                      <span class="font-bold block text-slate-900 mb-1">
+                        <i class="fa-solid fa-circle-info text-brand-500 mr-1"></i> Solution Explanation:
+                      </span>
+                      ${q.explanation}
+                    </div>
+                  ` : ""}
+                </div>
+              `;
+            }).join("")}
+          </div>
+
+          <div class="flex justify-between items-center py-4">
+            <button onclick="resetQuiz()" class="px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-xl text-xs font-semibold transition">
+              <i class="fa-solid fa-rotate-left mr-1.5"></i> Reset Current Exam
+            </button>
+            <button onclick="nextExamSet()" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-semibold shadow-md transition">
+              Next Exam Set <i class="fa-solid fa-arrow-right ml-1.5"></i>
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function switchQuizSet(index) {
+      activeQuizSetIndex = parseInt(index);
+      userQuizAnswers = {};
+      renderContent();
+    }
+
+    function nextExamSet() {
+      const chap = getCurrentChapter();
+      activeQuizSetIndex = (activeQuizSetIndex + 1) % chap.quizSets.length;
+      userQuizAnswers = {};
+      renderContent();
+    }
+
+    function handleAnswer(questionIdx, optionIdx) {
+      userQuizAnswers[questionIdx] = optionIdx;
+      renderContent();
+    }
+
+    function resetQuiz() {
+      userQuizAnswers = {};
+      renderContent();
+    }
+
+    /* ==========================================================================
+       GLOBAL REAL-TIME SEARCH
+       ========================================================================== */
+    function handleSearch(term) {
+      const resultsContainer = document.getElementById("searchResults");
+      const cleanTerm = term.trim().toLowerCase();
+
+      if (!cleanTerm) {
+        resultsContainer.classList.add("hidden");
+        return;
+      }
+
+      let matches = [];
+      courseData.chapters.forEach(ch => {
+        // Search in Flashcards
+        ch.flashcards.forEach(fc => {
+          if (fc.front.toLowerCase().includes(cleanTerm) || fc.back.toLowerCase().includes(cleanTerm)) {
+            matches.push({
+              chapterId: ch.id,
+              chapterName: ch.number,
+              title: fc.front,
+              desc: fc.back,
+              type: "Flashcard"
+            });
+          }
+        });
+        // Search in Study Guide
+        ch.studyGuide.forEach(sg => {
+          sg.subSections.forEach(sub => {
+            if (sub.subtitle.toLowerCase().includes(cleanTerm) || sub.details.some(d => d.toLowerCase().includes(cleanTerm))) {
+              matches.push({
+                chapterId: ch.id,
+                chapterName: ch.number,
+                title: sub.subtitle,
+                desc: sub.details[0],
+                type: "Study Guide"
+              });
+            }
+          });
+        });
+      });
+
+      if (matches.length === 0) {
+        resultsContainer.innerHTML = `<div class="p-3 text-xs text-slate-400 text-center">No matching concepts found.</div>`;
+      } else {
+        resultsContainer.innerHTML = matches.map(m => `
+          <div onclick="selectSearchResult('${m.chapterId}')" class="p-2.5 hover:bg-slate-100 rounded-lg cursor-pointer transition">
+            <div class="flex items-center justify-between text-[10px] text-slate-400 font-semibold mb-1">
+              <span>${m.chapterName} • ${m.type}</span>
+            </div>
+            <div class="font-bold text-xs text-slate-800">${m.title}</div>
+            <div class="text-[11px] text-slate-500 truncate">${m.desc}</div>
+          </div>
+        `).join("");
+      }
+      resultsContainer.classList.remove("hidden");
+    }
+
+    function selectSearchResult(chapterId) {
+      switchChapter(chapterId);
+      document.getElementById("searchResults").classList.add("hidden");
+      document.getElementById("searchInput").value = "";
+    }
+  </script>
+</body>
+</html>
